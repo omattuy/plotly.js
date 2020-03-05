@@ -202,6 +202,7 @@ describe('Visible rangesliders', function() {
     });
 
     it('should update correctly when moving slider on an axis with breaks', function(done) {
+        // TODO adapt for new `type: 'date'` requirements !!
         var start = 250;
         var end = 300;
 

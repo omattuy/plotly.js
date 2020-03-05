@@ -250,6 +250,8 @@ module.exports = {
     },
 
     breaks: templatedArray('break', {
+        // TODO only works for *date* axis type, update descriptions
+
         enabled: {
             valType: 'boolean',
             role: 'info',

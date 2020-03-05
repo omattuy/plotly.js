@@ -1019,6 +1019,8 @@ describe('Test axes', function() {
             expect(layoutOut.yaxis2.range).withContext('yaxis2 range').toEqual([0, 4]);
         });
 
+        // TODO update these for new `type: 'date'` requirement !
+
         it('should coerce *breaks* container only when it is a non-empty array', function() {
             layoutIn = {
                 xaxis: {breaks: [{bounds: [0, 1]}]},
@@ -4014,6 +4016,8 @@ describe('Test axes', function() {
     });
 
     describe('*breaks*', function() {
+        // TODO adapt `type: 'date'` requirement !!
+
         describe('during doCalcdata', function() {
             var gd;
 
@@ -4030,6 +4034,7 @@ describe('Test axes', function() {
             }
 
             it('should discard coords within break bounds', function() {
+                // Adapt to e.g. { bounds: ['2020-01-04', '2020-01-05 23:59'] }
                 _calc({
                     x: [0, 10, 50, 90, 100, 150, 190, 200]
                 }, {

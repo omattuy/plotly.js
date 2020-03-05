@@ -121,17 +121,16 @@ module.exports = function handleAxisDefaults(containerIn, containerOut, coerce, 
         }
     }
 
-    // TODO
-    // - does this make sense for 'log', 'category' and 'multicategory' axis types ??
-
-    var breaks = containerIn.breaks;
-    if(Array.isArray(breaks) && breaks.length) {
-        handleArrayContainerDefaults(containerIn, containerOut, {
-            name: 'breaks',
-            inclusionAttr: 'enabled',
-            handleItemDefaults: breaksDefaults
-        });
-        setConvert(containerOut, layoutOut);
+    if(containerOut.type === 'date') {
+        var breaks = containerIn.breaks;
+        if(Array.isArray(breaks) && breaks.length) {
+            handleArrayContainerDefaults(containerIn, containerOut, {
+                name: 'breaks',
+                inclusionAttr: 'enabled',
+                handleItemDefaults: breaksDefaults
+            });
+            setConvert(containerOut, layoutOut);
+        }
     }
 
     return containerOut;
@@ -145,6 +144,7 @@ function breaksDefaults(itemIn, itemOut, containerOut) {
     var enabled = coerce('enabled');
 
     if(enabled) {
+        // TODO don't need `isDateAxis` anymore !!
         var isDateAxis = containerOut.type === 'date';
 
         var bnds = coerce('bounds');

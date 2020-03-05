@@ -2031,6 +2031,9 @@ describe('axis zoom/pan and main plot zoom', function() {
     });
 
     describe('with axis breaks', function() {
+        // TODO SHOULD use date axes !
+        // see axes_breaks-weekends-weeknights.json for an example
+
         it('should compute correct range updates - x-axis case', function(done) {
             function _assert(msg, xrng) {
                 expect(gd.layout.xaxis.range).toBeCloseToArray(xrng, 2, 'xrng - ' + msg);

@@ -2705,6 +2705,8 @@ describe('Hover on axes with breaks', function() {
     }
 
     it('should work when breaks are present on x-axis', function(done) {
+        // TODO adapt for new `type: 'date'` requirement
+
         Plotly.plot(gd, [{
             mode: 'lines',  // i.e. no autorange padding
             x: [0, 10, 50, 90, 95, 100, 150, 190, 200]
