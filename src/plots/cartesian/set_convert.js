@@ -579,7 +579,13 @@ module.exports = function setConvert(ax, fullLayout) {
                     ax._lBreaks += (brk.max - brk.min);
                 }
 
+                // TODO would be cool if ax._lBreaks remains positive on
+                // reversed-range axes and then `brk.min < brk.max`
+
+                // TODO I think the denominator is wrong for reversed-range axes
                 ax._m2 = ax._length / (rl1 - rl0 - ax._lBreaks);
+                // Might be:
+                // ax._m2 = Math.sgn(rl1 - rl0) * ax._length / (Math.abs(rl1 - rl0) - ax._lBreaks);
 
                 if(axLetter === 'y') {
                     ax._breaks.reverse();
@@ -651,6 +657,7 @@ module.exports = function setConvert(ax, fullLayout) {
                                 b0 = bnds[1];
                                 b1 = bnds[0];
                             }
+                            // TODO should work with reversed-range axes
                             vb = v;
                             break;
                     }
@@ -705,6 +712,8 @@ module.exports = function setConvert(ax, fullLayout) {
         }
 
         var addBreak = function(min, max) {
+            // TODO might need to handle case where `min > max`
+
             min = Lib.constrain(min, r0, r1);
             max = Lib.constrain(max, r0, r1);
             if(min === max) return;
@@ -741,6 +750,11 @@ module.exports = function setConvert(ax, fullLayout) {
                     if(brk.pattern) {
                         bnds = Lib.simpleMap(brk.bounds, cleanNumber);
                         if(bnds[0] === bnds[1] && op === '()') continue;
+
+                        // TODO to fix reversed-range behavuour:
+                        //  - might have to start generating breaks at range[1] here
+                        //    e.g. use `var r00 = Math.min(r0, r1);`
+                        //  - or, have a negative `bndDelta`
 
                         // r0 value as date
                         var r0Date = new Date(r0);
