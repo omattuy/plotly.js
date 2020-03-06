@@ -21,8 +21,6 @@ var handleCategoryOrderDefaults = require('./category_order_defaults');
 var handleLineGridDefaults = require('./line_grid_defaults');
 var setConvert = require('./set_convert');
 
-var ONEDAY = require('../../constants/numerical').ONEDAY;
-
 /**
  * options: object containing:
  *
@@ -144,9 +142,6 @@ function breaksDefaults(itemIn, itemOut, containerOut) {
     var enabled = coerce('enabled');
 
     if(enabled) {
-        // TODO don't need `isDateAxis` anymore !!
-        var isDateAxis = containerOut.type === 'date';
-
         var bnds = coerce('bounds');
 
         if(bnds && bnds.length >= 2) {
@@ -169,14 +164,12 @@ function breaksDefaults(itemIn, itemOut, containerOut) {
                 }
             }
 
-            if(isDateAxis) {
-                coerce('pattern');
-            }
+            coerce('pattern');
         } else {
             var values = coerce('values');
 
             if(values && values.length) {
-                coerce('dvalue', isDateAxis ? ONEDAY : 1);
+                coerce('dvalue');
             } else {
                 itemOut.enabled = false;
                 return;
