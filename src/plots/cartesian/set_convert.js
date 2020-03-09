@@ -571,7 +571,11 @@ module.exports = function setConvert(ax, fullLayout) {
         if(ax.breaks) {
             var i, brk;
 
-            ax._breaks = ax.locateBreaks(rl0, rl1);
+            ax._breaks = ax.locateBreaks(
+                Math.min(rl0, rl1),
+                Math.max(rl0, rl1)
+            );
+            var signAx = rl0 > rl1 ? -1 : 1;
 
             if(ax._breaks.length) {
                 for(i = 0; i < ax._breaks.length; i++) {
@@ -579,13 +583,7 @@ module.exports = function setConvert(ax, fullLayout) {
                     ax._lBreaks += (brk.max - brk.min);
                 }
 
-                // TODO would be cool if ax._lBreaks remains positive on
-                // reversed-range axes and then `brk.min < brk.max`
-
-                // TODO I think the denominator is wrong for reversed-range axes
-                ax._m2 = ax._length / (rl1 - rl0 - ax._lBreaks);
-                // Might be:
-                // ax._m2 = Math.sgn(rl1 - rl0) * ax._length / (Math.abs(rl1 - rl0) - ax._lBreaks);
+                ax._m2 = ax._length / (rl1 - rl0 - ax._lBreaks * signAx);
 
                 if(axLetter === 'y') {
                     ax._breaks.reverse();
@@ -597,7 +595,11 @@ module.exports = function setConvert(ax, fullLayout) {
 
                 for(i = 0; i < ax._breaks.length; i++) {
                     brk = ax._breaks[i];
-                    ax._B.push(ax._B[ax._B.length - 1] - ax._m2 * (brk.max - brk.min));
+                    ax._B.push(ax._B[ax._B.length - 1] - ax._m2 * (brk.max - brk.min) * signAx);
+                }
+
+                if(signAx === -1) {
+                    ax._B.reverse();
                 }
 
                 // fill pixel (i.e. 'p') min/max here,
@@ -707,8 +709,6 @@ module.exports = function setConvert(ax, fullLayout) {
         });
 
         var addBreak = function(min, max) {
-            // TODO might need to handle case where `min > max`
-
             min = Lib.constrain(min, r0, r1);
             max = Lib.constrain(max, r0, r1);
             if(min === max) return;
@@ -745,11 +745,6 @@ module.exports = function setConvert(ax, fullLayout) {
                     if(brk.pattern) {
                         bnds = Lib.simpleMap(brk.bounds, cleanNumber);
                         if(bnds[0] === bnds[1] && op === '()') continue;
-
-                        // TODO to fix reversed-range behavuour:
-                        //  - might have to start generating breaks at range[1] here
-                        //    e.g. use `var r00 = Math.min(r0, r1);`
-                        //  - or, have a negative `bndDelta`
 
                         // r0 value as date
                         var r0Date = new Date(r0);
