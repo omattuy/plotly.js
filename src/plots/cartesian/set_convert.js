@@ -193,11 +193,13 @@ module.exports = function setConvert(ax, fullLayout) {
             if(!isNumeric(v)) return BADNUM;
             if(!ax._breaks.length) return _l2p(v, ax._m, ax._b);
 
+            var signAx = (axLetter === 'y') ? -1 : 1;
+
             var b = ax._B[0];
             for(var i = 0; i < ax._breaks.length; i++) {
                 var brk = ax._breaks[i];
 
-                if(axLetter === 'y') {
+                if(signAx === -1) {
                     if(v <= brk.min) b = ax._B[i + 1];
                     else if(v > brk.min && v < brk.max) {
                         // when v falls into break, pick offset 'closest' to it
@@ -215,18 +217,20 @@ module.exports = function setConvert(ax, fullLayout) {
                     } else if(v < brk.min) break;
                 }
             }
-            return _l2p(v, ((axLetter === 'y') ? -1 : 1) * ax._m2, b);
+            return _l2p(v, signAx * ax._m2, b);
         };
 
         p2l = function(px) {
             if(!isNumeric(px)) return BADNUM;
             if(!ax._breaks.length) return _p2l(px, ax._m, ax._b);
 
+            var signAx = (axLetter === 'y') ? -1 : 1;
+
             var b = ax._B[0];
             for(var i = 0; i < ax._breaks.length; i++) {
                 var brk = ax._breaks[i];
 
-                if(axLetter === 'y') {
+                if(signAx === -1) {
                     if(px >= brk.pmin) b = ax._B[i + 1];
                     else if(px < brk.pmax) break;
                 } else {
@@ -234,7 +238,7 @@ module.exports = function setConvert(ax, fullLayout) {
                     else if(px < brk.pmin) break;
                 }
             }
-            return _p2l(px, ((axLetter === 'y') ? -1 : 1) * ax._m2, b);
+            return _p2l(px, signAx * ax._m2, b);
         };
     }
 
